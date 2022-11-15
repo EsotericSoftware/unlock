@@ -44,16 +44,20 @@ public class Unlock {
 			String[] columns = entry.split(",", 5);
 			if (columns.length != 5) throw error("Error getting handles (invalid response): " + String.join(" ", command));
 			if (!columns[4].trim().equals(path)) continue;
-			command.add(columns[1]);
-			command.add("-c");
-			command.add(columns[3]);
-			command.add("-y");
-			run(command, null, true);
-			command.remove(6);
-			command.remove(5);
-			command.remove(4);
-			command.remove(3);
-			System.out.println("Unlocked: " + columns[0]);
+			if (list)
+				System.out.println(columns[0]);
+			else {
+				command.add(columns[1]);
+				command.add("-c");
+				command.add(columns[3]);
+				command.add("-y");
+				run(command, null, true);
+				command.remove(6);
+				command.remove(5);
+				command.remove(4);
+				command.remove(3);
+				System.out.println("Unlocked: " + columns[0]);
+			}
 		}
 	}
 
@@ -87,7 +91,7 @@ public class Unlock {
 		String path = null;
 		boolean list = false;
 		for (String arg : args) {
-			if (arg.equals("--list"))
+			if (arg.equals("-l") || arg.equals("--list"))
 				list = true;
 			else
 				path = arg;
