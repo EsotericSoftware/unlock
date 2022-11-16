@@ -19,7 +19,7 @@ Windows Registry Editor Version 5.00
 @="&Unlock"
 
 [HKEY_CLASSES_ROOT\*\shell\Unlock\Command]
-@="\"C:\\path\\to\\java.exe" -jar \"C:\\path\\to\\unlock.jar\" \"%1\""
+@="\"C:\\path\\to\\java.exe\" -jar \"C:\\path\\to\\unlock.jar\" \"%1\""
 ```
 
 ### `handle`
