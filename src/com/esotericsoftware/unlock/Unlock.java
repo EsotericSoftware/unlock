@@ -29,7 +29,9 @@ public class Unlock {
 		command.add("-nobanner");
 		command.add("-v");
 		command.add(path);
-		if (!run(command, handles, false)) {
+		try {
+			run(command, handles, false);
+		} catch (Exception ex) {
 			if (handles.size() != 1 || !handles.get(0).equals("No matching handles found."))
 				throw error("Error getting handles (exit code): " + String.join(" ", command));
 			System.out.println("File is not locked.");
@@ -51,7 +53,11 @@ public class Unlock {
 				command.add("-c");
 				command.add(columns[3]);
 				command.add("-y");
-				run(command, null, true);
+				try {
+					run(command, null, true);
+				} catch (Exception ex) {
+					throw error("Unable to unlock for process: " + columns[0]);
+				}
 				command.remove(6);
 				command.remove(5);
 				command.remove(4);
@@ -61,7 +67,7 @@ public class Unlock {
 		}
 	}
 
-	private boolean run (ArrayList<String> command, ArrayList<String> output, boolean requireSuccess) throws Exception {
+	private void run (ArrayList<String> command, ArrayList<String> output, boolean requireSuccess) throws Exception {
 		var builder = new ProcessBuilder();
 		builder.command(command);
 		builder.redirectErrorStream(true);
@@ -76,11 +82,9 @@ public class Unlock {
 
 		int exitCode = process.waitFor();
 		if (exitCode != 0) {
-			if (requireSuccess) throw error("Shell exited with code " + exitCode + ": " + String.join(" ", command) //
-				+ "\nOutput:\n" + String.join("\n", output));
-			return false;
+			throw error("Shell exited with code " + exitCode + ": " + String.join(" ", command) //
+				+ "\nOutput:\n" + (output == null ? "<null>" : String.join("\n", output)));
 		}
-		return true;
 	}
 
 	static private Exception error (String message) {
